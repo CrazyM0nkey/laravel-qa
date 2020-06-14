@@ -1,3 +1,29 @@
+Skip to content
+Search or jump to…
+
+Pull requests
+Issues
+Marketplace
+Explore
+
+@CrazyM0nkey
+tutsprime
+/
+laravel-qa
+19
+7497
+Code
+Issues 1
+Pull requests 3 Actions
+Projects 0
+Wiki
+Security 0
+Insights
+laravel-qa/resources/views/questions/index.blade.php
+@tutsprime tutsprime Implement authorization using Gates
+960c28a on 24 Jun 2018
+70 lines (64 sloc) 3.59 KB
+
 @extends('layouts.app')
 
 @section('content')
@@ -12,9 +38,12 @@
                             <a href="{{ route('questions.create') }}" class="btn btn-outline-secondary">Ask Question</a>
                         </div>
                     </div>
+
                 </div>
+
                 <div class="card-body">
-                    @include('layouts._messages')
+                    @include ('layouts._messages')
+
                     @foreach ($questions as $question)
                     <div class="media">
                         <div class="d-flex flex-column counters">
@@ -22,34 +51,46 @@
                                 <strong>{{ $question->votes }}</strong> {{ Str::plural('vote', $question->votes) }}
                             </div>
                             <div class="status {{ $question->status }}">
-                                <strong>{{ $question->answers }}</strong>
-                                {{ Str::plural('answer', $question->answers) }}
+                                <strong>{{ $question->answers }}</strong> {{ Str::plural('answer', $question->answers) }}
                             </div>
                             <div class="view">
-                                {{ $question->views }} {{ Str::plural('view', $question->views) }}
+                                {{ $question->views . " " . Str::plural('view', $question->views) }}
                             </div>
                         </div>
                         <div class="media-body">
-                            <div class="d-flex align-item-center">
+                            <div class="d-flex align-items-center">
                                 <h3 class="mt-0"><a href="{{ $question->url }}">{{ $question->title }}</a></h3>
                                 <div class="ml-auto">
+                                    @if (Auth::user()->can('update-question', $question))
                                     <a href="{{ route('questions.edit', $question->id) }}"
                                         class="btn btn-sm btn-outline-info">Edit</a>
+                                    @endif
+
+                                    @if (Auth::user()->can('delete-question', $question))
+                                    <form class="form-delete" method="post"
+                                        action="{{ route('questions.destroy', $question->id) }}">
+                                        @method('DELETE')
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm btn-outline-danger"
+                                            onclick="return confirm('Are you sure?')">Delete</button>
+                                    </form>
+                                    @endif
                                 </div>
                             </div>
                             <p class="lead">
                                 Asked by
-                                <a href="{{ $question->user->url }}">
-                                    {{ $question->user->name }}
-                                </a>
+                                <a href="{{ $question->user->url }}">{{ $question->user->name }}</a>
                                 <small class="text-muted">{{ $question->created_date }}</small>
                             </p>
-                            {{ $question->body}}
+                            {{ Str::limit($question->body, 250) }}
                         </div>
                     </div>
                     <hr>
                     @endforeach
-                    {{ $questions->links() }}
+
+                    <div class="mx-auto">
+                        {{ $questions->links() }}
+                    </div>
                 </div>
             </div>
         </div>
