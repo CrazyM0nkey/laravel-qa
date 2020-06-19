@@ -18,25 +18,38 @@
                     </div>
                     <div class="media">
                         <div class="d-flex flex-column vote-controls">
-                            <a title="This question is useful" class="vote-up">
+                            <a title="This question is useful" class="vote-up {{ Auth::guest() ? 'off' : '' }}"
+                                onclick="event.preventDefault(); document.getElementById('up-vote-question-{{ $question->id }}').submit();">
                                 <i class="fa fa-caret-up fa-3x"></i>
                             </a>
-                            <span class="votes-count">1230</span>
-                            <a title="This question is not useful" class="vote-down off">
+                            <form id="up-vote-question-{{ $question->id }}" action="/questions/{{ $question->id }}/vote"
+                                method="POST" style="display: none;">
+                                @csrf
+                                <input type="hidden" name="vote" value="1">
+                            </form>
+                            <span class="votes-count">{{ $question->votes_count }}</span>
+                            <a title="This question is not useful" 
+                                class="vote-down {{ Auth::guest() ? 'off' : '' }}"
+                                onclick="event.preventDefault(); document.getElementById('down-vote-question-{{ $question->id }}').submit();"
+                                >
                                 <i class="fa fa-caret-down fa-3x"></i>
                             </a>
+                            <form id="down-vote-question-{{ $question->id }}" action="/questions/{{ $question->id }}/vote" method="POST"
+                                style="display: none;">
+                                @csrf
+                                <input type="hidden" name="vote" value="-1">
+                            </form>
                             <a title="Click to mark as favorite question (Click again to undo)"
                                 class="favorite {{ Auth::guest() ? 'off' : ($question->is_favorited ? 'favorited' : '') }} mt-2"
-                                onclick="event.preventDefault(); document.getElementById('favorite-question-{{ $question->id }}').submit();"
-                                >
+                                onclick="event.preventDefault(); document.getElementById('favorite-question-{{ $question->id }}').submit();">
                                 <i class="fa fa-star fa-2x"></i>
                                 <span class="favorites-count">{{ $question->favorites_count }}</span>
                             </a>
-                            <form id="favorite-question-{{ $question->id }}" action="/questions/{{ $question->id }}/favorites" method="POST"
-                                style="display: none;">
+                            <form id="favorite-question-{{ $question->id }}"
+                                action="/questions/{{ $question->id }}/favorites" method="POST" style="display: none;">
                                 @csrf
                                 @if ($question->is_favorited)
-                                    @method('DELETE') 
+                                @method('DELETE')
                                 @endif
                             </form>
                         </div>
@@ -64,8 +77,8 @@
         </div>
     </div>
     @include('answers._index', [
-        'answers' => $question->answers,
-        'answersCount' => $question->answers_count,
+    'answers' => $question->answers,
+    'answersCount' => $question->answers_count,
     ])
     @include('answers._create')
 </div>
