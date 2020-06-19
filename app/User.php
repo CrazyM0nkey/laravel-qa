@@ -2,9 +2,11 @@
 
 namespace App;
 
+use App\Answer;
+use App\Question;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
@@ -45,7 +47,7 @@ class User extends Authenticatable
     public function getUrlAttribute()
     {
         //return route('questions.show', $this->id);
-        return('#');
+        return ('#');
     }
 
     public function answers()
@@ -58,7 +60,10 @@ class User extends Authenticatable
         $email = $this->email;
         $size = 32;
         return "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?s=" . $size;
-        
     }
 
+    public function favorites()
+    {
+        return $this->belongsToMany(Question::class, 'favorites')->withTimestamps();
+    }
 }
