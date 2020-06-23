@@ -8,7 +8,7 @@
                 <div class="card-body">
                     <div class="card-title">
                         <div class="d-flex align-items-center">
-                            <h1>{{ $question->title }}</h1>
+                            <h1>{{  $question->title  }}</h1>
                             <div class="ml-auto">
                                 <a href="{{ route('questions.index') }}" class="btn btn-outline-secondary">Back to all
                                     Questions</a>
@@ -21,7 +21,7 @@
                         'model' => $question
                         ])
                         <div class="media-body">
-                            {!! $question->body !!}
+                            {{ $question->body }}
                             <div class="row">
                                 <div class="col-4"></div>
                                 <div class="col-4"></div>

@@ -43,6 +43,11 @@ class Question extends Model
         return "unanswered";
     }
 
+    public function answer()
+    {
+        return $this->belongsTo(Answer::class, );
+    }
+
     public function answers() {
         return $this->hasMany(Answer::class);
     }

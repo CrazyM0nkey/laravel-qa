@@ -11,7 +11,7 @@ class QuestionsController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth', ['except' => ['index', 'show']] );
+        $this->middleware('auth', ['except' => ['index', 'show']]);
     }
     /**
      * Display a listing of the resource.
@@ -32,7 +32,6 @@ class QuestionsController extends Controller
     public function create()
     {
         $question = new Question();
-
         return view('questions.create', compact('question'));
     }
 
@@ -44,7 +43,11 @@ class QuestionsController extends Controller
      */
     public function store(AskQuestionRequest $request)
     {
-        $request->user()->questions()->create($request->only('title', 'body'));
+        $request->user()->questions()->create([
+            'title' => (htmlspecialchars($request->title)),
+            'body' => (htmlspecialchars($request->body))
+        ]);
+
         return redirect()->route('questions.index')->with('success', 'Your question has been submitted.');
     }
 
@@ -56,6 +59,7 @@ class QuestionsController extends Controller
      */
     public function show(Question $question)
     {
+        $question = $this->decodeTitleBodyHtml($question);
         $question->increment('views');
         return view('questions.show', compact('question'));
     }
@@ -69,7 +73,8 @@ class QuestionsController extends Controller
     public function edit(Question $question)
     {
         $this->authorize('update', $question);
-        return view('questions.edit', compact('question'));
+        $this->decodeTitleBodyHtml($question);
+        return view('questions.edit', \compact('question'));
     }
 
     /**
@@ -81,8 +86,8 @@ class QuestionsController extends Controller
      */
     public function update(AskQuestionRequest $request, Question $question)
     {
-        $this->authorize('update');
-        $question->update($request->only('title', 'body'));
+        $this->authorize('update', $question);
+        $question->update($this->titleBodyHtml($request)->only('title', 'body'));
         return redirect('questions')->with('success', 'Your question has been updated.');
     }
 
@@ -97,6 +102,25 @@ class QuestionsController extends Controller
         $this->authorize('delete', $question);
         $question->delete();
 
-        return redirect('/question')->with('success', 'Your question has been deleted.');
+        return redirect('/questions')->with('success', 'Your question has been deleted.');
+    }
+
+    private function decodeTitleBodyHtml(Question $question)
+    {
+        $question->title = \htmlspecialchars_decode($question->title);
+        $question->body = \htmlspecialchars_decode($question->body);
+        return $question;
+    }
+
+    private function titleBodyHtml(Request $request)
+    {
+        $request->title = \htmlspecialchars($request->title);
+        $request->body = \htmlspecialchars($request->body);
+        return $request;
+    }
+
+    private function decodeAnswerTitleBody()
+    {
+        
     }
 }

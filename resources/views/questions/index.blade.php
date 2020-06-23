@@ -19,7 +19,8 @@
                     <div class="media">
                         <div class="d-flex flex-column counters">
                             <div class="vote">
-                                <strong>{{ $question->votes_count }}</strong> {{ Str::plural('vote', $question->votes_count) }}
+                                <strong>{{ $question->votes_count }}</strong>
+                                {{ Str::plural('vote', $question->votes_count) }}
                             </div>
                             <div class="status {{ $question->status }}">
                                 <strong>{{ $question->answers_count }}</strong>
@@ -31,7 +32,7 @@
                         </div>
                         <div class="media-body">
                             <div class="d-flex align-item-center">
-                                <h3 class="mt-0"><a href="{{ $question->url }}">{{ $question->title }}</a></h3>
+                                <h3 class="mt-0"><a href="{{ $question->url }}">{{ htmlspecialchars_decode($question->title) }}</a></h3>
                                 <div class="ml-auto">
                                     @can('update', $question)
                                     <a href="{{ route('questions.edit', $question->id) }}"
@@ -56,7 +57,8 @@
                                 </a>
                                 <small class="text-muted">{{ $question->created_date }}</small>
                             </p>
-                            {{ $question->body}}
+
+                            <div class="excerpt">{{ htmlspecialchars_decode($question->body) }}</div>
                         </div>
                     </div>
                     <hr>

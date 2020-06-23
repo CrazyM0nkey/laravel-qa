@@ -32,7 +32,8 @@
                             
                     </div>
                     <div class="media-body">
-                        {!! $answer->body !!}
+                        
+                        {{  htmlspecialchars_decode($answer->body)  }}
                         <div class="row">
                             <div class="col-4">
                                 <div class="ml-auto">
