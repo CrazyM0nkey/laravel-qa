@@ -43,13 +43,8 @@ class Question extends Model
         return "unanswered";
     }
 
-    public function answer()
-    {
-        return $this->belongsTo(Answer::class, );
-    }
-
     public function answers() {
-        return $this->hasMany(Answer::class);
+        return $this->hasMany(Answer::class)->orderBy('votes_count', 'DESC');
     }
 
     public function acceptBestAnswer(Answer $answer)

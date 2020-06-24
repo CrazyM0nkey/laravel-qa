@@ -1,3 +1,4 @@
+@if ($answersCount > 0)
 <div class="row mt-4">
     <div class="col-md-12">
         <div class="card">
@@ -14,8 +15,8 @@
                             onclick="event.preventDefault(); document.getElementById('up-vote-answer-{{ $answer->id }}').submit();">
                             <i class="fa fa-caret-up fa-3x"></i>
                         </a>
-                        <form id="up-vote-answer-{{ $answer->id }}" action="/answers/{{ $answer->id }}/vote" method="POST"
-                            style="display: none;">
+                        <form id="up-vote-answer-{{ $answer->id }}" action="/answers/{{ $answer->id }}/vote"
+                            method="POST" style="display: none;">
                             @csrf
                             <input type="hidden" name="vote" value="1">
                         </form>
@@ -24,15 +25,15 @@
                             onclick="event.preventDefault(); document.getElementById('down-vote-answer-{{ $answer->id }}').submit();">
                             <i class="fa fa-caret-down fa-3x"></i>
                         </a>
-                        <form id="down-vote-answer-{{ $answer->id }}" action="/answers/{{ $answer->id }}/vote" method="POST"
-                            style="display: none;">
+                        <form id="down-vote-answer-{{ $answer->id }}" action="/answers/{{ $answer->id }}/vote"
+                            method="POST" style="display: none;">
                             @csrf
                             <input type="hidden" name="vote" value="-1">
                         </form>
-                            
+
                     </div>
                     <div class="media-body">
-                        
+
                         {{  htmlspecialchars_decode($answer->body)  }}
                         <div class="row">
                             <div class="col-4">
@@ -56,8 +57,8 @@
                             <div class="col-4"></div>
                             <div class="col-4">
                                 @include('shared._author', [
-                                    'model' => $answer,
-                                    'label' => 'answered'
+                                'model' => $answer,
+                                'label' => 'answered'
                                 ])
                             </div>
                         </div>
@@ -70,3 +71,4 @@
         </div>
     </div>
 </div>
+@endif
