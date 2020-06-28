@@ -9,7 +9,7 @@
 </form>
 @else
 @if ($model->is_best)
-<a title="The answer owner marked this quetstion as best answer" class="{{ $model->status }} mt-2">
+<a title="The answer owner marked this answer as best answer" class="{{ $model->status }} mt-2">
     <i class="fas fa-check fa-2x"></i>
 </a>
 @endif

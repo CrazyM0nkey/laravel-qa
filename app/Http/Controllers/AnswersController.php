@@ -21,7 +21,7 @@ class AnswersController extends Controller
         
         $question->answers()->create([
             'user_id' => Auth::id(),
-            'body' => \htmlspecialchars($request->body)
+            'body' => htmlspecialchars($request->body)
             ]);
         return \back()->with('success', 'Your answer has been submitted successfully.');
     }
@@ -33,10 +33,10 @@ class AnswersController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit(Question $question, Answer $answer)
-    {   
-        $question->title = \htmlspecialchars_decode($question->title);
-        $answer->body = \htmlspecialchars_decode($answer->body);
+    {
         $this->authorize('update', $answer);
+        $question->title = \htmlspecialchars_decode($question->title);
+        $answer->body = $answer->body();
         return view('answers.edit', compact('question', 'answer'));
     }
 
@@ -53,7 +53,12 @@ class AnswersController extends Controller
         $answer->update([
             'body' => htmlspecialchars($request->body)
         ]);
-
+        if($request->expectsJson()){
+            return response()->json([
+            'message' => 'HUHU...Your answer has been updated.',
+            'body_html' => $answer->body_html
+        ]);
+        }
         return redirect()->route('questions.show', $question->slug)->with('success', 'Your answer has been updated.');
     }
 

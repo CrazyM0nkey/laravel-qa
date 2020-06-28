@@ -12,7 +12,7 @@ class Answer extends Model
         'body', 'user_id'
     ];
 
-    protected $appends = ['created_date'];
+    protected $appends = ['created_date', 'body_html'];
 
     public function question()
     {
@@ -53,5 +53,10 @@ class Answer extends Model
     public function isBest()
     {
         return $this->id == $this->question->best_answer_id;
+    }
+
+    public function getBodyHtmlAttribute()
+    {
+        return htmlspecialchars_decode($this->body);
     }
 }
